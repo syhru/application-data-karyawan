@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aplikasi Data Pribadi</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="/app.css">
+  <script defer src="/vendor/jquery-3.7.1.min.js"></script>
+  <script defer src="/vendor/bootstrap.bundle.min.js"></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+<main class="container-fluid app-shell">
+  <header class="app-header">
+    <svg class="identity-icon" viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="36" height="28" rx="3"/><circle cx="12" cy="12" r="4"/><path d="M6 24c0-7 12-7 12 0M23 10h10M23 16h10M23 22h7"/></svg>
+    <h1>Aplikasi Data Pribadi</h1>
+  </header>
+  <p class="form-text">Data awal adalah contoh, bukan data identitas asli. Perubahan hilang saat aplikasi berhenti.</p>
+  <div id="notice" class="alert" role="status" hidden></div>
+  <section id="monitoring" aria-label="Monitoring data pribadi">
+    <form id="search-form" novalidate>
+      <div class="search-panel">
+        <div class="search-field"><label for="filter-nik" class="form-label">NIK</label><input id="filter-nik" class="form-control" type="text" inputmode="numeric" maxlength="16" aria-describedby="filter-error"></div>
+        <div class="search-field"><label for="filter-nama" class="form-label">Nama</label><input id="filter-nama" class="form-control" type="text" maxlength="200"></div>
+        <p id="filter-error" class="field-error mb-0" role="alert" hidden></p>
+      </div>
+      <div class="main-actions"><button class="btn btn-primary" type="submit">Search</button><button id="add" class="btn btn-primary" type="button">Add</button></div>
+    </form>
+    <p id="list-status" role="status" aria-live="polite"></p>
+    <div class="table-responsive" role="region" aria-label="Tabel data pribadi" tabindex="0">
+      <table class="table table-bordered align-middle">
+        <caption class="visually-hidden">Monitoring data pribadi</caption>
+        <thead><tr><th scope="col">No</th><th scope="col">NIK</th><th scope="col">Nama Lengkap</th><th scope="col">Umur</th><th scope="col">Tanggal Lahir</th><th scope="col">Jenis Kelamin</th><th scope="col">Alamat</th><th scope="col">Negara</th><th scope="col">Action</th></tr></thead>
+        <tbody id="data-rows"></tbody>
+      </table>
+    </div>
+  </section>
+  <section id="editor" hidden aria-labelledby="form-title">
+    <h2 id="form-title" tabindex="-1"></h2>
+    <p id="form-loading" role="status" hidden>Memuat data pribadi...</p>
+    <div id="form-error" class="alert alert-danger" role="alert" hidden></div>
+    <form id="data-form" novalidate>
+      <p class="form-text">NIK dan Nama Lengkap wajib diisi.</p>
+      <div class="mb-3"><label for="nik" class="form-label">NIK <span aria-hidden="true">*</span></label><input id="nik" name="nik" class="form-control" type="text" inputmode="numeric" maxlength="16" required aria-describedby="nik-error"><div id="nik-error" class="invalid-feedback"></div></div>
+      <div class="mb-3"><label for="namaLengkap" class="form-label">Nama Lengkap <span aria-hidden="true">*</span></label><input id="namaLengkap" name="namaLengkap" class="form-control" type="text" maxlength="200" required aria-describedby="namaLengkap-error"><div id="namaLengkap-error" class="invalid-feedback"></div></div>
+      <fieldset class="mb-3"><legend class="form-label">Jenis Kelamin</legend><div class="gender-options"><label class="form-check"><input id="gender-male" class="form-check-input" type="radio" name="jenisKelamin" value="Laki-Laki"><span class="form-check-label">Laki-laki</span></label><label class="form-check"><input id="gender-female" class="form-check-input" type="radio" name="jenisKelamin" value="Perempuan"><span class="form-check-label">Perempuan</span></label></div><div id="jenisKelamin-error" class="field-error" hidden></div></fieldset>
+      <div class="mb-3"><label for="tanggalLahir" class="form-label">Tanggal Lahir</label><input id="tanggalLahir" name="tanggalLahir" class="form-control" type="date" aria-describedby="tanggalLahir-error"><div id="tanggalLahir-error" class="invalid-feedback"></div></div>
+      <div class="mb-3"><label for="alamat" class="form-label">Alamat</label><textarea id="alamat" name="alamat" class="form-control" rows="3" maxlength="5000" aria-describedby="alamat-error"></textarea><div id="alamat-error" class="invalid-feedback"></div></div>
+      <div class="mb-4"><label for="negara" class="form-label">Negara</label><select id="negara" name="negara" class="form-select" aria-describedby="negara-error"><option value="">Pilih Negara</option><option>Indonesia</option><option>Malaysia</option><option>Argentina</option><option>Portugal</option><option>Rusia</option></select><div id="negara-error" class="invalid-feedback"></div></div>
+      <div class="form-actions"><button id="save" class="btn btn-primary" type="submit">Simpan</button><button id="back" class="btn btn-secondary" type="button">Kembali</button></div>
+    </form>
+  </section>
+</main>
+<div id="delete-modal" class="modal" tabindex="-1" aria-labelledby="delete-title" aria-describedby="delete-message" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h2 id="delete-title" class="modal-title fs-5">Konfirmasi Hapus Data</h2></div>
+    <div class="modal-body"><p id="delete-message" class="mb-0"></p><div id="delete-error" class="alert alert-danger mt-3 mb-0" role="alert" hidden></div></div>
+    <div class="modal-footer"><button id="delete-ok" class="btn btn-primary" type="button">OK</button><button id="delete-cancel" class="btn btn-secondary" type="button" data-bs-dismiss="modal">Batal</button></div>
+  </div></div>
+</div>
+</body>
+</html>
